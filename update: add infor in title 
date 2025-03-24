@@ -1,0 +1,1387 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/update%3A%20add%20infor%20in%20title%20\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Chapter 13: Using TensorFlow Lite in Android Apps - Part 1. 🧑‍💻📱"
+      ],
+      "metadata": {
+        "id": "mB2MYyeh1PxY"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![cover](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/cover.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "nyOSBU_61WyR"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Hí hí =))\n",
+        "\n",
+        "Chào mọi người, mình trở lại rồi đây! 🎉 Sau khi sắp xếp hết công việc cá nhân cũng như nghiên cứu và khởi động một vài dự án khởi nghiệp, giờ mình đã có thể tiếp tục viết các chương rồi. 😆  \n",
+        "\n",
+        "Hôm nay, tụi mình sẽ đến với chương 13, học cách ứng dụng AI vào các app trên hệ điều hành Android nha. 📱 Vì chương này chủ yếu là cài đặt và chạy trên máy local của mọi người nên không cần phải run Colab chi nha. 🚀"
+      ],
+      "metadata": {
+        "id": "UGQ-1MZR1w2a"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Android Studio là gì? 🤔  \n",
+        "\n",
+        "Nói đơn giản thì mọi người có thể hiểu nó như là một trình viết code và quản lý dự án tương tự như **VSCode** hay **PyCharm** á, nhưng mà chủ yếu cho các app Android. 📱 Mọi người cũng có thể giả lập điện thoại để chạy trên này được luôn nha. 🖥️📲  \n",
+        "\n",
+        "## Ngôn ngữ tụi mình sẽ dùng là gì? 💻  \n",
+        "\n",
+        "Câu trả lời là **Kotlin** nha. 🚀 Mọi người đừng quá lo lắng, nó cũng tương tự với **Java** à, hoàn toàn có thể gọi và sử dụng các thư viện của **Java** được luôn.  \n",
+        "\n",
+        "Nghe ảo chưa? 😆  \n",
+        "\n",
+        "Nó được thiết kế có phần đơn giản và dễ dàng sử dụng hơn Java nhiều, với mục tiêu tối ưu hóa sự tiện lợi. ✨"
+      ],
+      "metadata": {
+        "id": "XnPqoZFw2ark"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# Bây giờ tụi mình tiến hành xây dựng thử một app Android với TensorFlow Lite nha. 🚀📱  \n",
+        "\n",
+        "Tụi mình sẽ xây dựng một ứng dụng nhỏ về AI để thử nghiệm. Cái mà đoán kết quả của phương trình `y = 2x - 1` á. 🤖✨  \n",
+        "\n",
+        "Nếu mọi người chưa có mô hình đó thì có thể chạy đoạn code dưới đây để tải mô hình nha. 💡💾"
+      ],
+      "metadata": {
+        "id": "x8YgEL7L4VG7"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Bước 1. Chuẩn bị file mô hình cho ứng dụng. 📂🤖  "
+      ],
+      "metadata": {
+        "id": "gOaLTdwg75rU"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import tensorflow as tf\n",
+        "import numpy as np\n",
+        "# Xây dựng mô hình\n",
+        "model = tf.keras.Sequential([\n",
+        "  tf.keras.layers.Dense(units=1, input_shape=[1])\n",
+        "])\n",
+        "\n",
+        "# Biên dịch mô hình\n",
+        "model.compile(optimizer='sgd', loss='mean_squared_error')\n",
+        "\n",
+        "# Dữ liệu huấn luyện\n",
+        "xs = np.array([-1, 0, 1, 2, 3, 4])\n",
+        "ys = np.array([-3, -1, 1, 3, 5, 7])\n",
+        "\n",
+        "# Huấn luyện mô hình\n",
+        "model.fit(xs, ys, epochs=500)\n"
+      ],
+      "metadata": {
+        "id": "KcGUznIy4xnP"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "ctVUr_sY1FtO"
+      },
+      "outputs": [],
+      "source": [
+        "# Kiểm tra mô hình (tùy chọn)\n",
+        "print(model.predict(np.array([10.0])))\n",
+        "\n",
+        "# Lưu mô hình\n",
+        "model.save('my_model.h5')"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Mô hình sẽ đượcl lưu ở thư mục bên trái của **Colab** nha."
+      ],
+      "metadata": {
+        "id": "2AeQ4k546Y4U"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![1](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/1.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "VF0NRdnDATt5"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Tiếp đến, tụi mình tiến hành chuyển nó sang dạng **.tflite** để có thể sử dụng trong các thiết bị."
+      ],
+      "metadata": {
+        "id": "ARvqRc2i6rjc"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "model_path = \"./my_model.h5\"\n",
+        "\n",
+        "# Load lại mô hình từ file.h5\n",
+        "keras_model = tf.keras.models.load_model(model_path)\n",
+        "\n",
+        "# Tạo converter\n",
+        "converter = tf.lite.TFLiteConverter.from_keras_model(keras_model)\n",
+        "\n",
+        "# Tùy chọn: Bật tối ưu hóa để giảm kích thước mô hình\n",
+        "# converter.optimizations = [tf.lite.Optimize.DEFAULT]\n",
+        "\n",
+        "# Chuyển đổi mô hình\n",
+        "tflite_model = converter.convert()\n"
+      ],
+      "metadata": {
+        "id": "TuZ7rjkZ7Cty"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import pathlib\n",
+        "\n",
+        "tflite_model_path = 'my_model.tflite'\n",
+        "tflite_model_file = pathlib.Path(tflite_model_path)\n",
+        "tflite_model_file.write_bytes(tflite_model)"
+      ],
+      "metadata": {
+        "id": "Ztt78fKU7sYM"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Bước 2. Cài đặt ứng dụng **Android Studio**. 🛠️📱  \n",
+        "\n",
+        "Mọi người có thể ấn tải thông qua đường [link](https://developer.android.com/studio) sau đây nha. 🔗⬇️"
+      ],
+      "metadata": {
+        "id": "CgO3UW948C_u"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![2](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/2.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "YvRjD2lbAle7"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Sau khi tải xong và cài đặt, mọi mở lên thì nó sẽ hiện bảng này. Mọi người cứ ấn next hết giúp mình nha."
+      ],
+      "metadata": {
+        "id": "Nuc_xzitPq8M"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/3.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "BpYQu8l6AySm"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Bước 3. Khởi tạo dự án. 🚀📂  \n",
+        "\n",
+        "Sau khi tải và cài đặt app thành công, mọi người sẽ thấy giao diện chính như này nha. 🖥️✨"
+      ],
+      "metadata": {
+        "id": "8yMMfyYTJY_5"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/4.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "jLxFdsmHA-y0"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Mọi người nhấn vào **\"New Project\"** sẽ hiện ra các giao diện để lựa chọn. Mọi người chọn giúp mình cái **\"Empty Activity\"** nha."
+      ],
+      "metadata": {
+        "id": "nhfXjLzO0iwJ"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/5.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "XrLiNoUSBCfF"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Tiếp đến nó sẽ hiện ra khung để mọi người lựa chọn nơi lưu, mọi người chọn rồi ấn **Finish** là hoàn thành nha."
+      ],
+      "metadata": {
+        "id": "95a0PLbOJ6tl"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/6.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "H3u_GNjTBG63"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Sau khi chạy xong thì đây là giao diện mà tụi mình sẽ nhận được."
+      ],
+      "metadata": {
+        "id": "yer2TrkU2EWA"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/7.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "ifoZqXQ6BMkv"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Bước 4. Tinh chỉnh layout cho project. 🎨📱  \n",
+        "\n",
+        "Bây giờ tụi mình sẽ tiến hành tinh chỉnh layout trước nha. Mọi người lưu ý kỹ giúp mình phần này. 👀  \n",
+        "\n",
+        "Mọi người mở thư mục **res**, sẽ thấy có một thư mục tên là **layout**, bên trong sẽ chứa file `activity_main.xml`. 📂 Đây là file mà tụi mình sẽ chỉnh sửa giao diện. ✨🛠️"
+      ],
+      "metadata": {
+        "id": "UHQW9QLw2Wir"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/8.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "yxlrhNf7BRho"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Mọi người nhấp vào file và ân dấu chia màn hình ở góc trên bên phải để hiển thị code và giao diện nha."
+      ],
+      "metadata": {
+        "id": "0s4q1bR-idWV"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/9.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "m3Z6WyNoBVWA"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Giao diện nó sẽ như này nha. Vì lần đầu chạy nên project sẽ tién hành tải các phần khá lâu. Đây là kết quả sau khi hoàn thành."
+      ],
+      "metadata": {
+        "id": "CIfSBr3RprX4"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/10.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "TowI8bUXBZS5"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Sau đó mọi người thay toàn bộ đoạn code giao diện cũ bằng đoạn code này nha.\n",
+        "\n",
+        "\n",
+        "\n",
+        "```kotlin\n",
+        "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n",
+        "<LinearLayout xmlns:tools=\"http://schemas.android.com/tools\"\n",
+        "    android:orientation=\"vertical\"\n",
+        "    xmlns:android=\"http://schemas.android.com/apk/res/android\"\n",
+        "    android:layout_height=\"match_parent\"\n",
+        "    android:layout_width=\"match_parent\">\n",
+        "    <LinearLayout\n",
+        "        android:layout_width=\"match_parent\"\n",
+        "        android:layout_height=\"wrap_content\">\n",
+        "        <TextView\n",
+        "            android:id=\"@+id/lblEnter\"\n",
+        "            android:layout_width=\"wrap_content\"\n",
+        "            android:layout_height=\"wrap_content\"\n",
+        "            android:text=\"Enter X:  \"\n",
+        "            android:textSize=\"18sp\"></TextView>\n",
+        "        <EditText\n",
+        "            android:id=\"@+id/txtValue\"\n",
+        "            android:layout_width=\"180dp\"\n",
+        "            android:layout_height=\"wrap_content\"\n",
+        "            android:inputType=\"number\"\n",
+        "            android:text=\"1\"></EditText>\n",
+        "        <Button\n",
+        "            android:id=\"@+id/convertButton\"\n",
+        "            android:layout_width=\"wrap_content\"\n",
+        "            android:layout_height=\"wrap_content\"\n",
+        "            android:text=\"Convert\">\n",
+        "        </Button>\n",
+        "    </LinearLayout>\n",
+        "</LinearLayout>\n",
+        "```\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "_Trs5FEz11FY"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Đây là giao diện mà tụi mình sẽ đạt được."
+      ],
+      "metadata": {
+        "id": "EaI2NHCUIQZq"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/11.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "gGnYqy2CBeAa"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Bước 5. Tụi mình sẽ tiến hành thêm phần thư viện TFLite cho ứng dụng. 📚🤖  \n",
+        "\n",
+        "Về cơ bản, TFLite không có sẵn bên trong các API của Android, do đó tụi mình cần phải tự thêm thư viện bên ngoài này vào ứng dụng nha. 🛠️ Tụi mình sẽ thực hiện việc này thông qua công cụ **Gradle**. Nó cho phép mình có thể thiết lập môi trường nha. ⚙️  \n",
+        "\n",
+        "Mọi người nhấp vào file này giúp mình nha. 📂✨"
+      ],
+      "metadata": {
+        "id": "-78Wu2omIK1J"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/12.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "wRmL8X6JBiNF"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Tụi mình sẽ tiến hành chỉnh sửa ở cấp ứng dụng nha. Sẽ có 2 chỉnh sửa cần thực hiện.\n",
+        "\n",
+        "Một là thêm phần này\n",
+        "\n",
+        "`implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly`\n",
+        "\n",
+        "vào bên trong đoạn `dependencies`. Ở đây mình có thử phiên bản cao hơn, mọi người cũng có thể thử xem sao nha.\n"
+      ],
+      "metadata": {
+        "id": "VOdu8Xr4NaEU"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/13.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "2WrPLdKNBpBN"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Như vậy là được nha mọi người."
+      ],
+      "metadata": {
+        "id": "Z_iaG09mann2"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Hai là trong sách họ nói bởi vì **Android Studio** sẽ tự động nén file tflite lại nên cần phải thêm đoạn này:\n",
+        "\n",
+        "\n",
+        "```kotlin\n",
+        "android{\n",
+        "...\n",
+        " aaptOptions {\n",
+        " noCompress \"tflite\"\n",
+        " }\n",
+        "...\n",
+        "}\n",
+        "\n",
+        "```\n",
+        "\n",
+        "Tuy nhiên khi đào sâu hơn tìm hiểu và thực hành, mình thấy họ bảo rằng bây giờ họ không còn dùng lệnh này nữa. Ở phiên bản hiện tại **Android Studio** sử dụng **AGP 8.7** nên phần tflite đã được tự động thêm sẵn vào mục không mã hóa rồi. Chúng ta không cần thực hiện bước này nữa."
+      ],
+      "metadata": {
+        "id": "Xhnj1AM2alNZ"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Sau khi đã chuẩn bị xong hết đầy đủ tụi mình sẽ tiến hành thêm mô hình thật sự nha. Mọi người chú ý kĩ phần này vì có thể ở một số bạn, thư mục **main** sẽ không có phần **assets** như bên dưới."
+      ],
+      "metadata": {
+        "id": "OarSvLDYT2Sq"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/14.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "C6q2HmbIBtkc"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Nếu bạn chưa có thì hãy thực hiện bước dưới đây giúp mình nha."
+      ],
+      "metadata": {
+        "id": "xsyFmbN9bqEk"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/15.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "eTY_pjSXBxnu"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Bạn ấn chuột phải vào thư mục **main**, chọn **new** rồi đến **Directory** thì sẽ có một khung hiển thị ra như dưới đây."
+      ],
+      "metadata": {
+        "id": "KKc4XcQVb4py"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/16.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "yLuIajc-B5VV"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Sẽ có một thư mục **assets** được gợi ý ở dưới để bạn chọn nha, ấn vào rồi nhấn **Enter** là ok á.\n",
+        "\n",
+        "Do mình đã tạo trước đó rồi nên khung này của mình mới không có nha.\n",
+        "\n",
+        "Tiếp đến mọi người kéo file mô hình mà tụi mình đã huấn luyện và tải trước đó vào thư mục **assets** nha."
+      ],
+      "metadata": {
+        "id": "SZXmg7yNcQJf"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/17.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "k20mKdTuCBhS"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## Bước 6. Bây giờ tụi mình sẽ tiến hành viết code hoạt động để có thể chạy mô hình nha. 💻🤖  \n",
+        "\n",
+        "Tụi mình sẽ tiến hành code ở file **MainActivity.kt** nha. 📂 Mọi người có thể bật nó bằng cách mở thư mục **java** ra nha. Giao diện hiện ra sẽ như này. 🖥️✨"
+      ],
+      "metadata": {
+        "id": "0bs6L-RgdFwf"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/18.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "fjXDJNjdCE96"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Bây giờ tụi mình sẽ code một hàm nhỏ để load model nha. 💻🤖  \n",
+        "\n",
+        "```kotlin\n",
+        "private fun loadModelFile(assetManager: AssetManager,  \n",
+        " modelPath: String): ByteBuffer {  \n",
+        " val fileDescriptor = assetManager.openFd(modelPath)  \n",
+        " val inputStream = FileInputStream(fileDescriptor.fileDescriptor)  \n",
+        " val fileChannel = inputStream.channel  \n",
+        " val startOffset = fileDescriptor.startOffset  \n",
+        " val declaredLength = fileDescriptor.declaredLength  \n",
+        " return fileChannel.map(FileChannel.MapMode.READ_ONLY,  \n",
+        " startOffset, declaredLength)  \n",
+        "}\n",
+        "```  \n",
+        "\n",
+        "Khoan đã! Kin cha nà! 🤯  \n",
+        "\n",
+        "Ở đây mình nghĩ mình sẽ không thực hiện giống trong sách lắm, mình tạo một file riêng luôn để tiện cho việc thao tác. 📂 Mọi người chú ý kỹ giúp mình nha. 👀  \n",
+        "\n",
+        "Mình tạo ra một file nữa tên là **TFLiteModelHelper.kt** và đặt bên trong thư mục đó luôn. Mọi người thao tác như hình bên dưới nha:  \n",
+        "Ấn chuột phải vào thư mục, rồi ấn **New** → **Kotlin Class/File**. 🖱️✨"
+      ],
+      "metadata": {
+        "id": "Pn9H9J94dnlA"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/19.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "NXGpuG9FCJcR"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Mọi người đặt tên rồi nhấn vào chọn file giúp mình nha."
+      ],
+      "metadata": {
+        "id": "lcp20OpQkJbt"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/20.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "yRywA7rACN14"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Sau đó mọi người tiến hành thêm đoạn mã dưới đây vào file nha.\n",
+        "\n",
+        "\n",
+        "```kotlin\n",
+        "package com.example.firsttflite\n",
+        "\n",
+        "import android.content.res.AssetManager\n",
+        "import java.io.FileInputStream\n",
+        "import java.nio.ByteBuffer\n",
+        "import java.nio.channels.FileChannel\n",
+        "\n",
+        "object TFLiteModelHelper {\n",
+        "    fun loadModelFile(assetManager: AssetManager, modelPath: String): ByteBuffer {\n",
+        "        val fileDescriptor = assetManager.openFd(modelPath)\n",
+        "        val inputStream = FileInputStream(fileDescriptor.fileDescriptor)\n",
+        "        val fileChannel = inputStream.channel\n",
+        "        val startOffset = fileDescriptor.startOffset\n",
+        "        val declaredLength = fileDescriptor.declaredLength\n",
+        "        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)\n",
+        "    }\n",
+        "}\n",
+        "```\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "tjML064akgYd"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/21.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "FBltXE2mCSlS"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Bởi vì các file TFLite đại diện cho mô hình là một tập tin nhị phân chứa các trọng số và hệ số điều chỉnh mô hình, nên nó sẽ được tải vào Android và xử lý dưới dạng **ByteBuffer**. 📂📊 Do đó, muốn sử dụng được file mô hình, tụi mình sẽ cần phải tải vào bằng đường dẫn mô hình và lưu dưới dạng **ByteBuffer** để xử lý nha.  \n",
+        "\n",
+        "Để làm được việc này, tụi mình sẽ cần định nghĩa hai đoạn code sau để khởi tạo biến:  \n",
+        "\n",
+        "```kotlin\n",
+        "private lateinit var tflite: Interpreter  \n",
+        "private lateinit var tflitemodel: ByteBuffer  \n",
+        "```  \n",
+        "\n",
+        "- **tflite** sẽ đại diện cho **Interpreter**, làm nhiệm vụ thực thi mô hình. 🤖  \n",
+        "- **tflitemodel** sẽ đại diện cho **mô hình** mà chúng ta sẽ thực thi. 📥  \n",
+        "\n",
+        "Mọi người dán nó vào file **MainActivity.kt** giúp mình nha. 💻  \n",
+        "\n",
+        "💡 **Lưu ý nho nhỏ:** Còn phải import cả các thư viện sau vào nữa nha!  \n",
+        "\n",
+        "```kotlin\n",
+        "import org.tensorflow.lite.Interpreter  \n",
+        "import java.nio.ByteBuffer  \n",
+        "```  \n",
+        "\n",
+        "Kết quả của tụi mình sẽ như này nha. 🚀✨"
+      ],
+      "metadata": {
+        "id": "or-xYFvEmcEn"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/22.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "--JvGQeXCWps"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Như vậy là đã hoàn thành kha khá rồi á. Tiếp theo tụi mình sẽ gán mô hình vào biến tflitemodel và gán trình thông dịch (Interpreter) vào biến tflite nha.\n",
+        "\n",
+        "Đây là đoạn code tụi mình sẽ thêm vào:\n",
+        "\n",
+        "\n",
+        "```kotlin\n",
+        "try{\n",
+        "    tflitemodel = TFLiteModelHelper.loadModelFile(this.assets, \"model.tflite\")\n",
+        "    tflite = Interpreter(tflitemodel)\n",
+        "} catch(ex: Exception){\n",
+        "    ex.printStackTrace()\n",
+        "}\n",
+        "\n",
+        "```\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "htZAnpixt_gs"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/23.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "cUOdGOm6CcrD"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Vậy là tụi mình cũng sắp xong rồi, còn vài bước cuối nữa thôi nha. 🚀🎉 Tụi mình sẽ thêm code để khởi tạo biến cho giao diện cũng như hành động cho nút.  \n",
+        "\n",
+        "```kotlin\n",
+        "// Khởi tạo các thành phần giao diện  \n",
+        "val convertButton: Button = findViewById(R.id.convertButton)  \n",
+        "convertButton.setOnClickListener {  \n",
+        "    doInference()  \n",
+        "}  \n",
+        "txtValue = findViewById(R.id.txtValue)  \n",
+        "```  \n",
+        "\n",
+        "Lệnh này sẽ thực hiện hàm **doInference**. 🧠✨  \n",
+        "\n",
+        "💡 **Lưu ý nhỏ:** Để khả thi đoạn code trên, mọi người cần import thêm thư viện và khởi tạo biến như sau:  \n",
+        "\n",
+        "```kotlin\n",
+        "import android.widget.EditText  \n",
+        "```  \n",
+        "\n",
+        "và  \n",
+        "\n",
+        "```kotlin\n",
+        "private lateinit var txtValue: EditText  \n",
+        "```"
+      ],
+      "metadata": {
+        "id": "Vf2RtKC5uTah"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/24.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "y9neE4LhCh3n"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/25.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "vnJ2GjsVCnYO"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Ok, cũng hòm hòm rồi á. Bây giờ tụi mình sẽ tiến hành định nghĩa hàm `doInference()` ha.\n",
+        "\n",
+        "Đầu tiên là về biến dữ liệu đầu vào. Ở đây tụi mình tiếp nhận dữ liệu đầu vào từ textbox nên tất nhiên là chúng ở dạng văn bản string. Tụi mình cần phải chuyển lại nó về dạng số nha. Ở đây mình sẽ chọn chuyển về kiểu Float.\n",
+        "\n",
+        "\n",
+        "```kotlin\n",
+        "// Lấy giá trị từ EditText và chuyển thành Float\n",
+        "val userVal: Float = txtValue.text.toString().toFloat()\n",
+        "```\n",
+        "\n",
+        "Tiếp đến, mọi người nhớ lại ở các chương trước xem.\n",
+        "\n",
+        "**Trước khi đưa dữ liệu vào mô hình chúng ta cần làm gì nè?**\n",
+        "\n",
+        "Đúng òi, chính là định dạng lại chúng thành một mảng hay tensor để đưa vào mô hình. Chúng ta thường sẽ sử dụng kiểu Numpy array để chỉnh. Tuy nhiên ở trong Android lại không có Numpy, do đó chúng ta sẽ sử dụng một kiểu tương tự là mảng Float nha.\n",
+        "\n",
+        "\n",
+        "```kotlin\n",
+        "// Tạo mảng FloatArray để đưa vào mô hình\n",
+        "val inputVal: FloatArray = floatArrayOf(userVal)\n",
+        "```\n",
+        "\n",
+        "Bây giờ chúng ta đến với phần định nghĩa biến đầu ra. Ở đây chúng mình sẽ biết rằng mô hình trả về kết quả dưới dạng một luồng byte cần được thông dịch, giải mã. Giả định chúng ta mong muốn rằng kiểu đầu ra của mô hình là dạng float và một float thì sẽ chiếm 4 byte nên tụi mình có thể dùng **ByteBuffer** có kích thước 4 byte để thực hiện như dưới đây. Còn về kiểu sắp xếp byte thì mình chỉ sử dụng mặc định là `native order`.\n",
+        "\n",
+        "\n",
+        "```kotlin\n",
+        "// Tạo ByteBuffer để nhận đầu ra (4 bytes cho 1 float)\n",
+        "val outputVal: ByteBuffer = ByteBuffer.allocateDirect(4)\n",
+        "outputVal.order(ByteOrder.nativeOrder())\n",
+        "```\n",
+        "\n",
+        "Sau khi đã chuẩn bị xong về phần đầu ra và đầu vào rồi thì tụi mình có thể dùng lẹnh `run` để có thể chạy mô hình nha.\n",
+        "\n",
+        "\n",
+        "```kotlin\n",
+        "// Chạy suy luận\n",
+        "tflite.run(inputVal, outputVal)\n",
+        "```\n",
+        "\n",
+        "Tụi mình tiến hành xử lý thêm vài bước nhỏ với dữ liệu đầu ra của mô hình nha.\n",
+        "\n",
+        "```kotlin\n",
+        "// Đặt lại con trỏ của ByteBuffer để đọc kết quả\n",
+        "outputVal.rewind()\n",
+        "\n",
+        "// Đọc kết quả dưới dạng Float\n",
+        "val f: Float = outputVal.getFloat()\n",
+        "```\n",
+        "\n",
+        "Để hiển thị kết quả, mình sử dụng một khung cảnh báo **AleertDiaglog** nha.\n",
+        "\n",
+        "```kotlin\n",
+        "// Hiển thị kết quả bằng AlertDialog\n",
+        "val builder = AlertDialog.Builder(this)\n",
+        "with(builder) {\n",
+        "    setTitle(\"TFLite Interpreter\")\n",
+        "    setMessage(\"Your Value is: $f\")\n",
+        "    setNeutralButton(\"OK\") { dialog, _ -> dialog.cancel() }\n",
+        "    show()\n",
+        "}\n",
+        "```\n",
+        "Lưu ý nhỏ là mọi người nhớ import thêm các thư viện này vào để sử dụng nha.\n",
+        "\n",
+        "```kotlin\n",
+        "import android.app.AlertDialog\n",
+        "import java.nio.ByteOrder\n",
+        "```\n",
+        "\n",
+        "Dị là hoàn thành xong hết rồi á, bây giờ tụi mình chỉ cần ghép lại theo thứ tự thôi nha.\n"
+      ],
+      "metadata": {
+        "id": "qPttudDUyIE8"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Đây là bản đầy đủ của hàm `doInference` sau khi hoàn thành nha.\n",
+        "\n",
+        "\n",
+        "```kotlin\n",
+        "// Hàm thực hiện suy luận\n",
+        "private fun doInference() {\n",
+        "    // Lấy giá trị từ EditText và chuyển thành Float\n",
+        "    val userVal: Float = txtValue.text.toString().toFloat()\n",
+        "\n",
+        "    // Tạo mảng FloatArray để đưa vào mô hình\n",
+        "    val inputVal: FloatArray = floatArrayOf(userVal)\n",
+        "\n",
+        "    // Tạo ByteBuffer để nhận đầu ra (4 bytes cho 1 float)\n",
+        "    val outputVal: ByteBuffer = ByteBuffer.allocateDirect(4)\n",
+        "    outputVal.order(ByteOrder.nativeOrder())\n",
+        "\n",
+        "    // Chạy suy luận\n",
+        "    tflite.run(inputVal, outputVal)\n",
+        "\n",
+        "    // Đặt lại con trỏ của ByteBuffer để đọc kết quả\n",
+        "    outputVal.rewind()\n",
+        "\n",
+        "    // Đọc kết quả dưới dạng Float\n",
+        "    val f: Float = outputVal.getFloat()\n",
+        "\n",
+        "    // Hiển thị kết quả bằng AlertDialog\n",
+        "    val builder = AlertDialog.Builder(this)\n",
+        "    with(builder) {\n",
+        "        setTitle(\"TFLite Interpreter\")\n",
+        "        setMessage(\"Your Value is: $f\")\n",
+        "        setNeutralButton(\"OK\") { dialog, _ -> dialog.cancel() }\n",
+        "        show()\n",
+        "    }\n",
+        "}\n",
+        "```\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "108L2nAyjGBO"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Mình cung cấp lại code đầy đủ của 2 file là `acitivity_main.xml` và `MainActivity.kt` nha. Trong quá trình fixbug có thêm vài thứ nhỏ nên đây là bản đầy đủ.\n",
+        "\n",
+        "File `activity_main.xml`:\n",
+        "\n",
+        "```kotlin\n",
+        "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n",
+        "<LinearLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\n",
+        "    xmlns:tools=\"http://schemas.android.com/tools\"\n",
+        "    android:id=\"@+id/main\"\n",
+        "    android:layout_width=\"match_parent\"\n",
+        "    android:layout_height=\"match_parent\"\n",
+        "    android:orientation=\"vertical\"\n",
+        "    android:padding=\"16dp\">\n",
+        "\n",
+        "    <LinearLayout\n",
+        "        android:layout_width=\"match_parent\"\n",
+        "        android:layout_height=\"wrap_content\"\n",
+        "        android:orientation=\"horizontal\"\n",
+        "        android:gravity=\"center_vertical\">\n",
+        "\n",
+        "        <TextView\n",
+        "            android:id=\"@+id/lblEnter\"\n",
+        "            android:layout_width=\"wrap_content\"\n",
+        "            android:layout_height=\"wrap_content\"\n",
+        "            android:text=\"Enter X:  \"\n",
+        "            android:textSize=\"18sp\" />\n",
+        "\n",
+        "        <EditText\n",
+        "            android:id=\"@+id/txtValue\"\n",
+        "            android:layout_width=\"180dp\"\n",
+        "            android:layout_height=\"wrap_content\"\n",
+        "            android:inputType=\"numberDecimal\"\n",
+        "            android:text=\"1\" />\n",
+        "\n",
+        "        <Button\n",
+        "            android:id=\"@+id/convertButton\"\n",
+        "            android:layout_width=\"wrap_content\"\n",
+        "            android:layout_height=\"wrap_content\"\n",
+        "            android:layout_marginStart=\"8dp\"\n",
+        "            android:text=\"Convert\" />\n",
+        "    </LinearLayout>\n",
+        "</LinearLayout>\n",
+        "```\n",
+        "\n",
+        "File `MainActivity.kt`:\n",
+        "\n",
+        "```kotlin\n",
+        "package com.example.firsttflite\n",
+        "\n",
+        "import android.os.Bundle\n",
+        "import android.widget.Button\n",
+        "import android.widget.EditText\n",
+        "import androidx.activity.enableEdgeToEdge\n",
+        "import androidx.appcompat.app.AppCompatActivity\n",
+        "import androidx.core.view.ViewCompat\n",
+        "import androidx.core.view.WindowInsetsCompat\n",
+        "import android.app.AlertDialog\n",
+        "import org.tensorflow.lite.Interpreter\n",
+        "import java.nio.ByteBuffer\n",
+        "import java.nio.ByteOrder\n",
+        "\n",
+        "\n",
+        "class MainActivity : AppCompatActivity() {\n",
+        "\n",
+        "    // Khai báo các biến ở cấp độ lớp\n",
+        "    private lateinit var tflite: Interpreter\n",
+        "    private lateinit var tflitemodel: ByteBuffer\n",
+        "    private lateinit var txtValue: EditText\n",
+        "\n",
+        "\n",
+        "    override fun onCreate(savedInstanceState: Bundle?) {\n",
+        "        super.onCreate(savedInstanceState)\n",
+        "        enableEdgeToEdge()\n",
+        "        setContentView(R.layout.activity_main)\n",
+        "        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->\n",
+        "            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())\n",
+        "            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)\n",
+        "            insets\n",
+        "        }\n",
+        "\n",
+        "        // Tải mô hình TFLite\n",
+        "        try{\n",
+        "            tflitemodel = TFLiteModelHelper.loadModelFile(this.assets, \"my_model.tflite\")\n",
+        "            tflite = Interpreter(tflitemodel)\n",
+        "        } catch(ex: Exception){\n",
+        "            ex.printStackTrace()\n",
+        "        }\n",
+        "\n",
+        "        // Khởi tạo các thành phần giao diện\n",
+        "        val convertButton: Button = findViewById(R.id.convertButton)\n",
+        "        convertButton.setOnClickListener {\n",
+        "            doInference()\n",
+        "        }\n",
+        "        txtValue = findViewById(R.id.txtValue)\n",
+        "    }\n",
+        "\n",
+        "    // Hàm thực hiện suy luận\n",
+        "    private fun doInference() {\n",
+        "        // Lấy giá trị từ EditText và chuyển thành Float\n",
+        "        val userVal: Float = txtValue.text.toString().toFloat()\n",
+        "\n",
+        "        // Tạo mảng FloatArray để đưa vào mô hình\n",
+        "        val inputVal: FloatArray = floatArrayOf(userVal)\n",
+        "\n",
+        "        // Tạo ByteBuffer để nhận đầu ra (4 bytes cho 1 float)\n",
+        "        val outputVal: ByteBuffer = ByteBuffer.allocateDirect(4)\n",
+        "        outputVal.order(ByteOrder.nativeOrder())\n",
+        "\n",
+        "        // Chạy suy luận\n",
+        "        tflite.run(inputVal, outputVal)\n",
+        "\n",
+        "        // Đặt lại con trỏ của ByteBuffer để đọc kết quả\n",
+        "        outputVal.rewind()\n",
+        "\n",
+        "        // Đọc kết quả dưới dạng Float\n",
+        "        val f: Float = outputVal.getFloat()\n",
+        "\n",
+        "        // Hiển thị kết quả bằng AlertDialog\n",
+        "        val builder = AlertDialog.Builder(this)\n",
+        "        with(builder) {\n",
+        "            setTitle(\"TFLite Interpreter\")\n",
+        "            setMessage(\"Your Value is: $f\")\n",
+        "            setNeutralButton(\"OK\") { dialog, _ -> dialog.cancel() }\n",
+        "            show()\n",
+        "        }\n",
+        "    }\n",
+        "}\n",
+        "```\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "9QpiDemioeaL"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Sau khi hoàn thành xong hết, mọi người nhấn biểu tượng con voi trên thanh công cụ, góc phải để cập nhật gradle nha."
+      ],
+      "metadata": {
+        "id": "LKO4FbF63M-C"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/26.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "M8UVTJeOCyVd"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "## **Bước 7: Thiết lập và chạy ứng dụng** 🚀📱  \n",
+        "\n",
+        "Bởi vì ở đây mình không có máy sẵn nên mình sử dụng **trình giả lập** để tạo thiết bị nha. 🖥️📲 Mọi người có thể thử bằng cách:  \n",
+        "\n",
+        "1️⃣ **Mở Android Studio**  \n",
+        "2️⃣ **Chọn \"AVD Manager\"** (trong tab **Tools > Device Manager**)  \n",
+        "3️⃣ **Tạo một thiết bị ảo mới** (Chọn mẫu điện thoại, phiên bản Android phù hợp)  \n",
+        "4️⃣ **Chạy ứng dụng trên trình giả lập**  "
+      ],
+      "metadata": {
+        "id": "pq8j_wlsqVhq"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Đầu tiên mọi người nhấp vào biểu tượng 3 gạch rồi chọn **Tools** > **Device Manager** để mở thiết lập như hình bên dưới nha."
+      ],
+      "metadata": {
+        "id": "eRJ5NMkuqutz"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/27.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "V89l6jY7C1VD"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Một bảng nhỏ như này sẽ hiển thị ở bên trái, mọi người nhấn tọa thiết bị mới giúp mình. Sẽ có 2 lựa chọn nhỏ hiển thị phía trên, mọi người chọn giúp mình cái đầu tiên."
+      ],
+      "metadata": {
+        "id": "EOMkGXWArAJj"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/28.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "SPkW2FehC6kd"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Một bảng lựa chọn các thiết bị sẽ hiện ra, mọi người có thể chọn theo ý mình nha. Ở đây mình lựa chọn là **Pixel 6**."
+      ],
+      "metadata": {
+        "id": "RjSUyN1Sqm4Y"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/29.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "Z7X-XFkyC-hH"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Bạn ấn next tiếp theo, một bảng cài đặt sẽ hiển thị ra, mọi người có thể tùy chỉnh theo ý mình hoặc nâng cao hơn ở tab bên cạnh nha. Ở đây mình sử dụng mặc định. Sau khi mọi người ấn xong thì nhấn **Finish**.\n"
+      ],
+      "metadata": {
+        "id": "qgj12UYBr0ns"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/30.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "PQJZkBSIDCHt"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Có thể ở một vài bạn sẽ hiển thị bản thông báo tải xuống này cho hệ điều hành, mọi người cứ nhấn tải bình thường nha."
+      ],
+      "metadata": {
+        "id": "7ceLVQ3htdPy"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/31.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "DTToXLkmDG_T"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Như hình bên dưới là hoàn thành rồi nha. Bây giờ mọi người có thể nhấn nút **Play** để chạy thử."
+      ],
+      "metadata": {
+        "id": "JdlszQjHtqnq"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/32.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "P13rC0lBDMN6"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Giao diện sẽ bắt đầu khởi động. Mọi người đợi nó Connecting một lát là dược nha. Đây là giao diện hoàn chỉnh của tụi mình. Mọi người đợi thêm một tí là điện thoại sẽ vào giao diện màn hình home."
+      ],
+      "metadata": {
+        "id": "r0fsjD9cxzv-"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/33.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "F-t9V4K2DRJo"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/34.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "weWV8dVJDeg9"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Sau khi thấy trên thanh công cụ đã hiển thị được thiết bị, như ở mình là **Pixel 6** thì giờ tụi mình tiến hành chạy nha. Mọi người nhấn biểu tượng **Run** tam giác màu xanh bên cạnh con bọ để chương trình tiến hành biên dịch dự án. Giao diện sẽ trông như này. Mọi người đợi nó chạy xong là được nha."
+      ],
+      "metadata": {
+        "id": "yrDpysELyw5e"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/35.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "7VChY0dYDg-p"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Lỗi này ở một số bạn sẽ gặp phải, việc này là do lỗi không tương thích giữa các module."
+      ],
+      "metadata": {
+        "id": "0HH94XK40WzJ"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/36.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "l6Ep6TQ4DjSW"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Hiện tại mình đang sử dụng API lv 36 nhưng các phần minSdkVersion lại không tương thích. Do đó mình sẽ tăng lên 26 và target là 35 thử nha. Mọi người sẽ chỉnh nó ở file **build.gradle** trong app lúc trước.\n",
+        "\n",
+        "Sau khi xong thì mọi người nhấn biểu tượng con voi phía trên để cập nhật lại gradle nha."
+      ],
+      "metadata": {
+        "id": "iGSen2-B1jDx"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/37.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "9FgVa6TgDl94"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Mọi người ấn **Run**, hiển thị như này là thành công nha."
+      ],
+      "metadata": {
+        "id": "7nCFJOUO3JPZ"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/38.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "LrMLYqg5DoLb"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Đây là thành quả của tụi mình nha."
+      ],
+      "metadata": {
+        "id": "bYZcz-A66-tX"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/39.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "FCFrAHucDqbz"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "# **Tổng kết chương 13** 🎯🎉  \n",
+        "\n",
+        "**Hi, vậy là tụi mình đã đi hết được một nửa chương 13 rồi. Mọi người đã tìm hiểu được:**  \n",
+        "✅ Cách thiết lập và sử dụng **Android Studio**.  \n",
+        "✅ Cách thiết lập **máy ảo**.  \n",
+        "✅ Cách để sử dụng **model AI trên app điện thoại**.  \n",
+        "\n",
+        "💖 **Cảm ơn mọi người đã quan tâm và ủng hộ mình nha!** 🚀  \n",
+        "\n",
+        "📌 **Nội dung học tập này thuộc bản quyền của:**  \n",
+        "- ✍️ **Tác giả:** Trịnh Huỳnh Thịnh Khang.  \n",
+        "- 📖 **Page:** Nhật ký học tập của Khang. 📚"
+      ],
+      "metadata": {
+        "id": "F5HsSChI96dR"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "☕ **Mọi người có thể ủng hộ mình ly cà phê qua QR dưới đây nha. Mình xin cảm ơn ạ!** 💖🎉"
+      ],
+      "metadata": {
+        "id": "xBQhQjrC-uZd"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "![img](https://github.com/Tkag0001/AI_and_Machine_Learning_for_Coders/blob/main/images/Chapter_13/40.png?raw=true)"
+      ],
+      "metadata": {
+        "id": "4BeV4blkDtGq"
+      }
+    }
+  ]
+}
